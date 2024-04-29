@@ -2,6 +2,9 @@ function randint(min, max) {
     return Math.random() * (max - min) + min;
 }
 
+var panel = document.getElementById("form");
+panel.style.left = window.innerWidth * 0.35 + "px";
+
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 if (canvas.getContext) {
@@ -26,7 +29,7 @@ class Triangle {
 }
 
 var wave = [];
-var numRows = 3; 
+var numRows = 4; 
 var numTrianglesPerRow = 100;
 var vel = 0;
 var h = 220;
@@ -103,3 +106,20 @@ function bg() {
     window.requestAnimationFrame(bg)
 }
 bg();
+
+var panleft = window.innerWidth * 0.35;
+
+function zalogujh() {
+    panel.style.left = window.innerWidth * 0.35 + "px"; 
+    console.log(panleft);
+    panleft += 15;
+    panel.style.left = panleft + "px";
+    if(panleft > window.innerWidth * 0.7) clearInterval(interval);
+}
+
+var interval;
+
+function zaloguj() {
+    panel.innerHTML = "";
+    interval = setInterval(zalogujh, 8);
+}
