@@ -2,8 +2,29 @@ function randint(min, max) {
     return Math.random() * (max - min) + min;
 }
 
+var interval;
+
 var panel = document.getElementById("form");
 panel.style.left = window.innerWidth * 0.35 + "px";
+
+function menu_glowne(isnew) {
+    panel.innerHTML = "<h2>KSIĘGARNIA INTERNETOWA</h2>";
+    let form = document.createElement("form")
+    panel.append(form);
+    let actions = [zaloguj, zaloguj, zaloguj, "<b>Zaloguj</b>", "<b>Zarejestruj</b>", "<b>Przeglądaj zasoby</b>"];
+    for(let i=0;i<3;i++) {    
+        let button = document.createElement("button");
+        button.classList.add("button-main");
+        button.type = "button";
+        button.addEventListener("click", actions[i], false);
+        button.innerHTML = actions[i+3];
+        form.appendChild(button);
+    }
+    if (!isnew) {
+        interval = setInterval(function() {move(false, 0.35);}, 5);
+    }
+}
+menu_glowne(true);
 
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
@@ -109,17 +130,24 @@ bg();
 
 var panleft = window.innerWidth * 0.35;
 
-function zalogujh() {
+function move(right, where) {
     panel.style.left = window.innerWidth * 0.35 + "px"; 
     console.log(panleft);
-    panleft += 15;
+    if (right) panleft += 15;
+    else panleft -= 15;
     panel.style.left = panleft + "px";
-    if(panleft > window.innerWidth * 0.7) clearInterval(interval);
-}
+    if (right) {if(panleft > window.innerWidth * where) clearInterval(interval)};
+    if (!right) {if(panleft < window.innerWidth * where) clearInterval(interval)};
 
-var interval;
+}
 
 function zaloguj() {
     panel.innerHTML = "";
-    interval = setInterval(zalogujh, 8);
+    let button = document.createElement("button");
+    button.classList.add("button-main");
+    button.type = "button";
+    button.addEventListener("click", function(){menu_glowne(false);}, false);
+    button.innerHTML = "<b>WROC</b>";
+    panel.appendChild(button);
+    interval = setInterval(function() {move(true, 0.7);}, 5);
 }
