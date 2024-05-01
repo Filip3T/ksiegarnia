@@ -138,14 +138,47 @@ function move(right, where) {
     panel.style.left = panleft + "px";
     if (right) {if(panleft > window.innerWidth * where) clearInterval(interval)};
     if (!right) {if(panleft < window.innerWidth * where) clearInterval(interval)};
-
 }
 
 function zaloguj() {
     panel.innerHTML = "";
+    let header = document.createElement("h2");
+    header.innerHTML = "Zaloguj";
+    panel.appendChild(header);
+    let nform = document.createElement("form");
+    nform.method = "POST";
+    nform.action = "pr_html.php";
+    panel.appendChild(nform)
+    let names = ["Login", "Haslo"]
+    for(let i=0;i<=1;i++) {
+        let labels = document.createElement("label");
+        labels.for = names[i];
+        labels.innerHTML = names[i];
+        let inp = document.createElement("input");
+        inp.classList.add("button-main");
+        inp.style.marginTop = "0px";
+        inp.id = names[i];
+        inp.name = names[i] + "-zal";
+        nform.appendChild(labels);
+        nform.innerHTML += "<br>";
+        nform.appendChild(inp);
+    }
+    let types = ["reset", "submit", "wyczysc", "wyslij"];
+    for(let i=0;i<=1;i++) {
+        let button = document.createElement("button");
+        button.type = types[i];
+        button.classList.add("button-main");
+        button.style.width = "10vw";
+        button.innerHTML = types[i+2];
+        button.style.marginTop = "5vh";
+        if (i==1) button.style.marginLeft = "0px";
+        nform.appendChild(button);
+        nform.innerHTML += " ";
+    }
     let button = document.createElement("button");
     button.classList.add("button-main");
     button.type = "button";
+    button.style.marginTop = "40vh";
     button.addEventListener("click", function(){menu_glowne(false);}, false);
     button.innerHTML = "<b>WROC</b>";
     panel.appendChild(button);
