@@ -38,8 +38,13 @@ h2 {
     text-align: center;
 }
 
+<<<<<<< HEAD
+#body {
+    background:linear-gradient(to top right, rgb(0, 0, 0) 40%,rgb(50, 50, 50) 0.1%,rgb(50, 50, 50) 60%, rgb(0, 0, 0) 0.1%, rgb(0, 0, 0) 100%);
+=======
 body {
     background:linear-gradient(to top right, rgb(0, 0, 0) 40%,rgb(255, 255,255) 0.1%,rgb(255, 255, 255) 60%, rgb(0, 0, 0) 0.1%, rgb(0, 0, 0) 100%);
+>>>>>>> fa686975e0a1cae39905b3275cacd8612a2925a0
     overflow: hidden;
     position: absolute;
     top: 0px;
@@ -48,4 +53,62 @@ body {
     height: 100vh;
     display: inline-block;
     margin: 0px auto;
+<<<<<<< HEAD
+}
+
+#zal {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.5vw;
+    position: absolute;
+    z-index: 40;
+}
+
+#footer {
+    background: black;
+    position: absolute;
+    left: 0px;
+    top: 90vh;
+    height: 10vh;
+    width: 100vw;
+}
+
+.book {
+    background: rgba(255, 255, 255, 0.2);
+    width: 25vw;
+    height: 24vh;
+    margin: 1.5vw;
+    margin-right: 0px;
+    margin-left: 6.3vw;
+    float: left;
+}
+
+.tyt {
+    background: rgba(255, 255, 255, 0.2);
+    font-size: 3vh;
+    height: 15%;
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#czyt {
+    position: absolute;
+    right: -100vw;
+}
+
+.arrow {
+    position: absolute;
+    height: 10vh;
+    font-size: 10vh;
+    width: 5vw;
+    top: 45vh;
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+=======
 }   
+>>>>>>> fa686975e0a1cae39905b3275cacd8612a2925a0

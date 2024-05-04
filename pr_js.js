@@ -11,7 +11,7 @@ function menu_glowne(isnew) {
     panel.innerHTML = "<h2>KSIĘGARNIA INTERNETOWA</h2>";
     let form = document.createElement("form")
     panel.append(form);
-    let actions = [zaloguj, zaloguj, zaloguj, "<b>Zaloguj</b>", "<b>Zarejestruj</b>", "<b>Przeglądaj zasoby</b>"];
+    let actions = [function() {zaloguj("Zaloguj" , "-zal")},function() {zaloguj("Zarejestruj" , "-zar")}, przegladaj, "<b>Zaloguj</b>", "<b>Zarejestruj</b>", "<b>Przeglądaj zasoby</b>"];
     for(let i=0;i<3;i++) {    
         let button = document.createElement("button");
         button.classList.add("button-main");
@@ -129,28 +129,40 @@ function bg() {
 bg();
 
 var panleft = window.innerWidth * 0.35;
+var panwidth = window.innerWidth * 0.3;
+var panvis = 0.3;
 
 function move(right, where) {
     panel.style.left = window.innerWidth * 0.35 + "px"; 
-    console.log(panleft);
-    if (right) panleft += 15;
-    else panleft -= 15;
+    if (right) panleft += 10;
+    else panleft -= 10;
     panel.style.left = panleft + "px";
     if (right) {if(panleft > window.innerWidth * where) clearInterval(interval)};
     if (!right) {if(panleft < window.innerWidth * where) clearInterval(interval)};
 }
 
-function zaloguj() {
+function zaloguj(name, id) {
     panel.innerHTML = "";
     let header = document.createElement("h2");
+<<<<<<< HEAD
+    header.innerHTML = name;
+=======
     header.innerHTML = "Zaloguj";
+>>>>>>> fa686975e0a1cae39905b3275cacd8612a2925a0
     panel.appendChild(header);
     let nform = document.createElement("form");
     nform.method = "POST";
     nform.action = "pr_html.php";
     panel.appendChild(nform)
+<<<<<<< HEAD
+    let names = ["Login", "Haslo", "Email"]
+    let j = 1;
+    if(id=="-zar") j = 2;
+    for(let i=0;i<=j;i++) {
+=======
     let names = ["Login", "Haslo"]
     for(let i=0;i<=1;i++) {
+>>>>>>> fa686975e0a1cae39905b3275cacd8612a2925a0
         let labels = document.createElement("label");
         labels.for = names[i];
         labels.innerHTML = names[i];
@@ -158,7 +170,11 @@ function zaloguj() {
         inp.classList.add("button-main");
         inp.style.marginTop = "0px";
         inp.id = names[i];
+<<<<<<< HEAD
+        inp.name = names[i] + id;
+=======
         inp.name = names[i] + "-zal";
+>>>>>>> fa686975e0a1cae39905b3275cacd8612a2925a0
         nform.appendChild(labels);
         nform.innerHTML += "<br>";
         nform.appendChild(inp);
@@ -183,4 +199,127 @@ function zaloguj() {
     button.innerHTML = "<b>WROC</b>";
     panel.appendChild(button);
     interval = setInterval(function() {move(true, 0.7);}, 5);
+}
+
+function widen(widen) {
+    if (widen) panleft -= 5;
+    else panleft += 5;
+    if (widen) panwidth += 10;
+    else panwidth -= 10; 
+    panel.style.width = panwidth + "px";
+    panel.style.left = panleft + "px";
+    if (widen) {if(panvis < 0.8) panvis += 0.005;}
+    else {if(panvis > 0.3) panvis -= 0.005;}
+    panel.style.background = "rgba(0, 0, 0, " + panvis + ")";
+    if (widen) {if(panleft <= 0) {
+            clearInterval(interval);
+            panel.style.width = window.innerWidth + "px";
+            panel.style.left = "0px";
+            biblioteka();
+        } 
+    } else {
+        if(panleft >= window.innerWidth * 0.35) {
+            clearInterval(interval);
+            panel.style.width = window.innerWidth * 0.3 + "px";
+            panel.style.left = window.innerWidth * 0.35 + "px";
+            menu_glowne(true);
+        }
+    }
+}
+
+function przegladaj() {
+    panel.innerHTML = "";
+    interval = setInterval(function() {widen(true);}, 5);
+    
+}
+
+var books_c = ksiazki.length / 5;
+var page_n = Math.floor(books_c / 9) + 1;
+var page = 1;
+
+function biblioteka() {
+    let zal = document.getElementById("zal");
+    zal.innerHTML = "";
+    let footer = document.createElement("div");
+    footer.id = "footer";
+    panel.appendChild(footer);
+    let button = document.createElement("button");
+    button.classList.add("button-main");
+    button.addEventListener("click", function(){panel.innerHTML = "";interval = setInterval(function() {widen(false);}, 5)}, false);
+    button.innerHTML = "WROC";
+    button.style.marginTop = "2.5vh";
+    footer.appendChild(button);
+    let books = document.createElement("div");
+    books.id = "books";
+    panel.appendChild(books);
+
+    if (page_n != 1) pages(); 
+
+    let button2 = document.createElement("button");
+    button2.classList.add("button-main");
+    button2.addEventListener("click", test, false);
+    button2.innerHTML = "TEST";
+    button2.style.marginTop = "2.5vh";
+    footer.appendChild(button2);
+
+    add_books();
+}
+
+function add_books() {
+    let books = document.getElementById("books");
+    books.innerHTML = "";
+    for(let i=(page * 9 - 9);i<books_c;i++) {
+        add_book(ksiazki[(i * 5) + 1],ksiazki[(i * 5) + 2],ksiazki[(i * 5) + 3])
+    }
+}
+
+function add_book(name, price, author) {
+    let book = document.createElement("div");
+    book.classList.add("book");
+    let books = document.getElementById("books");
+    books.appendChild(book);
+    let tyt = document.createElement("div");
+    tyt.classList.add("tyt");
+    tyt.innerHTML = '"' + name + '"';
+    book.appendChild(tyt);
+    book.innerHTML += price + "<br>" + author;
+}
+
+function test() {
+    add_book("nazwa1", "cena1", "autor1");
+    add_book("nazwa2", "cena2", "autor2");
+    add_book("nazwa3", "cena3", "autor3");
+    add_book("nazwa4", "cena4", "autor4");
+    add_book("nazwa5", "cena5", "autor5");
+    add_book("nazwa6", "cena6", "autor6");
+    add_book("nazwa7", "cena7", "autor7");
+    add_book("nazwa8", "cena8", "autor8");
+    add_book("nazwa9", "cena9", "autor9");
+}
+
+function pages() {
+    if (page != 1) {
+        if (document.getElementById("ar-l") != null) document.getElementById("ar-l").remove();
+        let arrow_left = document.createElement("div");
+        arrow_left.classList.add("arrow");
+        arrow_left.innerHTML = "<";
+        arrow_left.style.left = "0px";
+        arrow_left.id = "ar-l";
+        arrow_left.addEventListener("click", function(){page -= 1;add_books();pages()}, false);
+        panel.appendChild(arrow_left);
+    } else {
+        if (document.getElementById("ar-l") != null) document.getElementById("ar-l").remove();
+    }
+    if (page != page_n) {
+        if (document.getElementById("ar-r") != null) document.getElementById("ar-r").remove();
+        let arrow_right = document.createElement("div");
+        arrow_right.classList.add("arrow");
+        arrow_right.innerHTML = ">";
+        arrow_right.style.left = window.innerWidth * 0.95 + "px";
+        arrow_right.id = "ar-r";
+        arrow_right.addEventListener("click", function(){page += 1;add_books();pages()}, false);
+        panel.appendChild(arrow_right);
+    } else {
+        if (document.getElementById("ar-r") != null) document.getElementById("ar-r").remove();
+    }
 }
