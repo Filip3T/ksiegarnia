@@ -38,13 +38,8 @@ h2 {
     text-align: center;
 }
 
-<<<<<<< HEAD
 #body {
     background:linear-gradient(to top right, rgb(0, 0, 0) 40%,rgb(50, 50, 50) 0.1%,rgb(50, 50, 50) 60%, rgb(0, 0, 0) 0.1%, rgb(0, 0, 0) 100%);
-=======
-body {
-    background:linear-gradient(to top right, rgb(0, 0, 0) 40%,rgb(255, 255,255) 0.1%,rgb(255, 255, 255) 60%, rgb(0, 0, 0) 0.1%, rgb(0, 0, 0) 100%);
->>>>>>> fa686975e0a1cae39905b3275cacd8612a2925a0
     overflow: hidden;
     position: absolute;
     top: 0px;
@@ -53,7 +48,6 @@ body {
     height: 100vh;
     display: inline-block;
     margin: 0px auto;
-<<<<<<< HEAD
 }
 
 #zal {
@@ -109,6 +103,3 @@ body {
     align-items: center;
     justify-content: center;
 }
-=======
-}   
->>>>>>> fa686975e0a1cae39905b3275cacd8612a2925a0
