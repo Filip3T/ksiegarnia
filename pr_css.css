@@ -66,10 +66,19 @@ h2 {
     width: 100vw;
 }
 
+#head {
+    background: black;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 10vh;
+    width: 100vw;
+}
+
 .book {
     background: rgba(255, 255, 255, 0.2);
     width: 25vw;
-    height: 24vh;
+    height: 22vh;
     margin: 1.5vw;
     margin-right: 0px;
     margin-left: 6.3vw;
@@ -102,4 +111,34 @@ h2 {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.info {
+    margin: 1vh;
+    size: 1.5vh;
+}
+
+#searchbar {
+    background: rgba(255, 255, 255, 0.5);
+    height: 4vh;
+    margin-top: 3vh;
+    margin-left: 2vw;
+    border-width: 0px;
+    width: 15vw;
+    font-size: 2vh;
+}
+
+#sub {
+    background: rgba(255, 255, 255, 0.5);
+    height: 4vh;
+    width: 10vw;
+    margin-left: 3vw;
+    border-width: 0px;
+}
+
+.buy-button {
+    background: rgba(255, 255, 255, 0.5);
+    height: 4vh;
+    width: 5vw;
+    border-width: 0px;
 }

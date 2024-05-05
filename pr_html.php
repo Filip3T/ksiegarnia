@@ -15,10 +15,10 @@
 </head>
 <body>
     <script>
-        var ksiazki = [<?php $zapk = "SELECT id_ksiazki, tytul, autor, cena, opis FROM ksiazki";
+        var ksiazki = [<?php $zapk = "SELECT id_ksiazki, tytul, autor, cena, opis, ilosc FROM ksiazki";
                        $resk = mysqli_query($base, $zapk);
                        while($ksiazka = mysqli_fetch_row($resk)) {
-                            echo "'".$ksiazka[0]."','".$ksiazka[1]."','".$ksiazka[2]."','".$ksiazka[3]."','".$ksiazka[4]."',";
+                            echo "'".$ksiazka[0]."','".$ksiazka[1]."','".$ksiazka[2]."','".$ksiazka[3]."','".$ksiazka[4]."','".$ksiazka[5]."',";
                        }?>]
         console.log(ksiazki);
     </script>

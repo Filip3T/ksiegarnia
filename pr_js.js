@@ -68,7 +68,7 @@ for (let j = 0; j < numRows; j++) {
         if (s != 99 && s != 1) s = Math.round(s + randint(-2, 2));
         else if (s <= 1) s += 2
         else s -= 2
-        if (l != 99 && l > 40) l = Math.round(l + randint(-2, 2));
+        if (l > 80 && l > 40) l = Math.round(l + randint(-2, 2));
         else if (l <= 40) l += 2
         else l -= 2
         if (h != 20 && h != 340) h = Math.round(h + randint(-20, 20));
@@ -144,25 +144,16 @@ function move(right, where) {
 function zaloguj(name, id) {
     panel.innerHTML = "";
     let header = document.createElement("h2");
-<<<<<<< HEAD
     header.innerHTML = name;
-=======
-    header.innerHTML = "Zaloguj";
->>>>>>> fa686975e0a1cae39905b3275cacd8612a2925a0
     panel.appendChild(header);
     let nform = document.createElement("form");
     nform.method = "POST";
     nform.action = "pr_html.php";
     panel.appendChild(nform)
-<<<<<<< HEAD
     let names = ["Login", "Haslo", "Email"]
     let j = 1;
     if(id=="-zar") j = 2;
     for(let i=0;i<=j;i++) {
-=======
-    let names = ["Login", "Haslo"]
-    for(let i=0;i<=1;i++) {
->>>>>>> fa686975e0a1cae39905b3275cacd8612a2925a0
         let labels = document.createElement("label");
         labels.for = names[i];
         labels.innerHTML = names[i];
@@ -170,11 +161,7 @@ function zaloguj(name, id) {
         inp.classList.add("button-main");
         inp.style.marginTop = "0px";
         inp.id = names[i];
-<<<<<<< HEAD
         inp.name = names[i] + id;
-=======
-        inp.name = names[i] + "-zal";
->>>>>>> fa686975e0a1cae39905b3275cacd8612a2925a0
         nform.appendChild(labels);
         nform.innerHTML += "<br>";
         nform.appendChild(inp);
@@ -233,7 +220,7 @@ function przegladaj() {
     
 }
 
-var books_c = ksiazki.length / 5;
+var books_c = ksiazki.length / 6;
 var page_n = Math.floor(books_c / 9) + 1;
 var page = 1;
 
@@ -251,6 +238,7 @@ function biblioteka() {
     footer.appendChild(button);
     let books = document.createElement("div");
     books.id = "books";
+    books.style.marginTop = "8vh";
     panel.appendChild(books);
 
     if (page_n != 1) pages(); 
@@ -262,6 +250,24 @@ function biblioteka() {
     button2.style.marginTop = "2.5vh";
     footer.appendChild(button2);
 
+    let head = document.createElement("div");
+    head.id = "head";
+    panel.appendChild(head);
+    let search = document.createElement("form");
+    search.id = "search";
+    head.appendChild(search);
+    let searchbar = document.createElement("input")
+    searchbar.type = "text";
+    searchbar.name = "znal";
+    searchbar.id = "searchbar"
+    search.appendChild(searchbar);
+    search.id += " ";
+    let sub = document.createElement("input");
+    sub.id = "sub";
+    sub.type = "submit";
+    sub.value = "Szukaj";
+    search.appendChild(sub);
+
     add_books();
 }
 
@@ -269,11 +275,11 @@ function add_books() {
     let books = document.getElementById("books");
     books.innerHTML = "";
     for(let i=(page * 9 - 9);i<books_c;i++) {
-        add_book(ksiazki[(i * 5) + 1],ksiazki[(i * 5) + 2],ksiazki[(i * 5) + 3])
+        add_book(ksiazki[(i * 6) + 1],ksiazki[(i * 6) + 2],ksiazki[(i * 6) + 3],ksiazki[(i * 6) + 4],ksiazki[(i * 6) + 5], ksiazki[(i * 6)])
     }
 }
 
-function add_book(name, price, author) {
+function add_book(name, author, price, desc, count, id) {
     let book = document.createElement("div");
     book.classList.add("book");
     let books = document.getElementById("books");
@@ -282,7 +288,20 @@ function add_book(name, price, author) {
     tyt.classList.add("tyt");
     tyt.innerHTML = '"' + name + '"';
     book.appendChild(tyt);
-    book.innerHTML += price + "<br>" + author;
+    for(let i=0;i<=2;i++) {
+        let info = document.createElement("div");
+        info.classList.add("info");
+        if (i==0) info.innerHTML = "cena: " + price + "zl";
+        else if(i==1) info.innerHTML = "autor: " + author;
+        else info.innerHTML = "opis:<br>" + desc;
+        book.appendChild(info);
+    }
+    let buy_button = document.createElement("button");
+    buy_button.addEventListener("click", function() {buy(name, count, id)}, false);
+    buy_button.type = "button";
+    buy_button.innerHTML = "KUP";
+    buy_button.classList.add("buy-button")
+    book.appendChild(buy_button);
 }
 
 function test() {
@@ -322,4 +341,9 @@ function pages() {
     } else {
         if (document.getElementById("ar-r") != null) document.getElementById("ar-r").remove();
     }
+}
+
+function buy(name, count, id) {
+    panel.innerHTML = "";
+    interval = setInterval(function() {widen(false);}, 5);
 }
