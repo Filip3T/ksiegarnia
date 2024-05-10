@@ -2,6 +2,22 @@ function randint(min, max) {
     return Math.random() * (max - min) + min;
 }
 
+var login_box_m = "";
+
+function CreateLoginBox() {
+    login_box_m = document.createElement("div");
+    login_box_m.id = "login-box";
+    if (login == "brak") {
+        login_box_m.innerHTML = "Nie zalogowano";
+    } else if (login == "zly") {
+        login_box_m.innerHTML = "Podano zly login";
+    } else {
+        login_box_m.innerHTML = "Zalogowano jako " + login;
+    }
+    document.body.appendChild(login_box_m);
+}
+CreateLoginBox();
+
 var interval;
 
 var panel = document.getElementById("form");
@@ -181,14 +197,15 @@ function zaloguj(name, id) {
     let button = document.createElement("button");
     button.classList.add("button-main");
     button.type = "button";
-    button.style.marginTop = "40vh";
+    if (name == "Zaloguj") button.style.marginTop = "40vh";
+    else button.style.marginTop = "30vh"
     button.addEventListener("click", function(){menu_glowne(false);}, false);
     button.innerHTML = "<b>WROC</b>";
     panel.appendChild(button);
     interval = setInterval(function() {move(true, 0.7);}, 5);
 }
 
-function widen(widen) {
+function widen(widen, buy, id) {
     if (widen) panleft -= 5;
     else panleft += 5;
     if (widen) panwidth += 10;
@@ -209,14 +226,19 @@ function widen(widen) {
             clearInterval(interval);
             panel.style.width = window.innerWidth * 0.3 + "px";
             panel.style.left = window.innerWidth * 0.35 + "px";
-            menu_glowne(true);
+            if (!buy) {
+                menu_glowne(true);
+                CreateLoginBox();
+            } else {
+                buy_form(id);
+            }
         }
     }
 }
 
 function przegladaj() {
     panel.innerHTML = "";
-    interval = setInterval(function() {widen(true);}, 5);
+    interval = setInterval(function() {widen(true, false, 0);}, 5);
     
 }
 
@@ -225,14 +247,13 @@ var page_n = Math.floor(books_c / 9) + 1;
 var page = 1;
 
 function biblioteka() {
-    let zal = document.getElementById("zal");
-    zal.innerHTML = "";
+    login_box_m.remove();
     let footer = document.createElement("div");
     footer.id = "footer";
     panel.appendChild(footer);
     let button = document.createElement("button");
     button.classList.add("button-main");
-    button.addEventListener("click", function(){panel.innerHTML = "";interval = setInterval(function() {widen(false);}, 5)}, false);
+    button.addEventListener("click", function(){panel.innerHTML = "";interval = setInterval(function() {widen(false, false, 0);}, 5)}, false);
     button.innerHTML = "WROC";
     button.style.marginTop = "2.5vh";
     footer.appendChild(button);
@@ -243,18 +264,12 @@ function biblioteka() {
 
     if (page_n != 1) pages(); 
 
-    let button2 = document.createElement("button");
-    button2.classList.add("button-main");
-    button2.addEventListener("click", test, false);
-    button2.innerHTML = "TEST";
-    button2.style.marginTop = "2.5vh";
-    footer.appendChild(button2);
-
     let head = document.createElement("div");
     head.id = "head";
     panel.appendChild(head);
     let search = document.createElement("form");
     search.id = "search";
+    search.style.width = "50vw";
     head.appendChild(search);
     let searchbar = document.createElement("input")
     searchbar.type = "text";
@@ -267,6 +282,13 @@ function biblioteka() {
     sub.type = "submit";
     sub.value = "Szukaj";
     search.appendChild(sub);
+    let login_text = "";
+    if(login != "brak" && login != "zly") login_text = "Zalogowano jako " + login;
+    else login_text = "Nie jestes zalogowany.";
+    let login_box = document.createElement("div");
+    login_box.id = "zal-head";
+    login_box.innerHTML = login_text;
+    head.appendChild(login_box);
 
     add_books();
 }
@@ -274,7 +296,10 @@ function biblioteka() {
 function add_books() {
     let books = document.getElementById("books");
     books.innerHTML = "";
-    for(let i=(page * 9 - 9);i<books_c;i++) {
+    let books_t = 0;
+    if (page * 9 < books_c) books_t = page * 9;
+    else books_t = (page * 9) - (9 - (books_c % 9));
+    for(let i=(page * 9 - 9);i<books_t;i++) {
         add_book(ksiazki[(i * 6) + 1],ksiazki[(i * 6) + 2],ksiazki[(i * 6) + 3],ksiazki[(i * 6) + 4],ksiazki[(i * 6) + 5], ksiazki[(i * 6)])
     }
 }
@@ -297,23 +322,11 @@ function add_book(name, author, price, desc, count, id) {
         book.appendChild(info);
     }
     let buy_button = document.createElement("button");
-    buy_button.addEventListener("click", function() {buy(name, count, id)}, false);
+    buy_button.addEventListener("click", function() {buy(id)}, false);
     buy_button.type = "button";
     buy_button.innerHTML = "KUP";
     buy_button.classList.add("buy-button")
     book.appendChild(buy_button);
-}
-
-function test() {
-    add_book("nazwa1", "cena1", "autor1");
-    add_book("nazwa2", "cena2", "autor2");
-    add_book("nazwa3", "cena3", "autor3");
-    add_book("nazwa4", "cena4", "autor4");
-    add_book("nazwa5", "cena5", "autor5");
-    add_book("nazwa6", "cena6", "autor6");
-    add_book("nazwa7", "cena7", "autor7");
-    add_book("nazwa8", "cena8", "autor8");
-    add_book("nazwa9", "cena9", "autor9");
 }
 
 function pages() {
@@ -343,7 +356,77 @@ function pages() {
     }
 }
 
-function buy(name, count, id) {
+function buy(id) {
     panel.innerHTML = "";
-    interval = setInterval(function() {widen(false);}, 5);
+    interval = setInterval(function() {widen(false, true, id);}, 5);
 }
+
+function check_buy(id) {
+    if (document.getElementById("message") != null) document.getElementById("message").remove();
+    let send = true;
+    let count = Number(document.getElementById("ilosc").value);
+    let check = ksiazki[((id - 1) * 6) + 3];
+    let form = document.getElementById("form2");
+    let message = document.createElement("div");
+    message.style.fontSize = "2vh";
+    message.style.marginLeft = "4vw";
+    message.id = "message";
+    if (count > check) {message.innerHTML += "<br>Nie mamy tyle ksiazek!!!"; send = false;} 
+    if (document.getElementById("adres").value.length <= 5) {message.innerHTML += "<br>Podaj prawidlowy adres!!!"; send = false;}
+    console.log(send)
+    if (send) {form.submit(); message.innerHTML += "<br>Wyslano!!!"}
+    form.appendChild(message);
+}
+
+function buy_form(id) {
+    let name = document.createElement("div");
+    name.id = "buy_name";
+    name.innerHTML = "Kup ksiazke - " + ksiazki[((id - 1) * 6) + 1];
+    panel.appendChild(name);
+    let form = document.createElement("form");
+    form.id = "form2";
+    form.action = "pr_html.php";
+    form.method = "POST";
+    form.style.marginTop = "5vh";
+    panel.appendChild(form);
+    let label_adres = document.createElement("label");
+    label_adres.for = "adres";
+    label_adres.innerHTML = "Adres zamowienia:"; 
+    form.appendChild(label_adres);
+    let adres = document.createElement("input");
+    adres.id = "adres";
+    adres.type = "text";
+    adres.name = "adres";
+    adres.classList.add("button-main");
+    adres.style.marginTop = "0px";
+    form.appendChild(adres);
+    let label_ilosc = document.createElement("label");
+    label_ilosc.for = "ilosc";
+    label_ilosc.innerHTML = "Ilosc:"; 
+    form.appendChild(label_ilosc);
+    let ilosc = document.createElement("input");
+    ilosc.id = "ilosc";
+    ilosc.type = "number";
+    ilosc.name = "ilosc";
+    ilosc.min = "0";
+    ilosc.style.marginTop = "0px";
+    ilosc.classList.add("button-main");
+    form.appendChild(ilosc);
+    let button1 = document.createElement("input");
+    button1.type = "reset";
+    button1.value = "Wyczysc";
+    button1.classList.add("button-main");
+    button1.style.marginTop = "5vh";
+    button1.style.width = "10vw";
+    form.appendChild(button1);
+    let but = document.createElement("button");
+    but.type = "button";
+    but.innerHTML = "Wyslij";
+    but.classList.add("button-main");
+    but.style.marginTop = "5vh";
+    but.style.width = "10vw";
+    but.style.marginLeft = "0px";
+    but.addEventListener("click", function() {check_buy(id);}, false);
+    form.appendChild(but);
+}
+

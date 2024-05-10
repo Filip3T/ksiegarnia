@@ -141,4 +141,41 @@ h2 {
     height: 4vh;
     width: 5vw;
     border-width: 0px;
+    margin-left: 1vh;
+}
+
+#zal-head {
+    text-align: right;
+    margin-right: 4vh;
+    height: 2vh;
+    color: white;
+    font-size: 2vh;
+    margin-top: -4vh;
+}
+
+#login-box {
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    width: 20vw;
+    z-index: 20;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 4vh;
+    font-size: 2vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#buy_name {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 3vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px;
+    height: 10vh;
+    width: 30vw;   
 }

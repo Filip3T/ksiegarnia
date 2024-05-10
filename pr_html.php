@@ -24,18 +24,21 @@
     </script>
     <div id="body">
         <div id="zal">
-            <?php
-                if (isset($_POST["Login-zal"])) {
-                    $zap1l = "SELECT login, haslo FROM klient WHERE email = '".$_POST["Login-zal"]."' OR login = '".$_POST["Login-zal"]."' AND haslo = '".$_POST["Haslo-zal"]."'";
-                    $res1l = mysqli_query($base, $zap1l);
-                    if (mysqli_num_rows($res1l) != 0) {
-                        echo "Zalogowano jako ".$_POST["Login-zal"]."<br>";
-                    } else { 
-                        echo "Zly login! Nie zalogowano!<br>";
+            <script>
+                var login = <?php if(isset($_POST["Login-zal"])) {
+                        $zap1l = "SELECT login, haslo FROM klient WHERE email = '".$_POST["Login-zal"]."' OR login = '".$_POST["Login-zal"]."' AND haslo = '".$_POST["Haslo-zal"]."'";
+                        $res1l = mysqli_query($base, $zap1l);
+                        if (mysqli_num_rows($res1l) != 0) {
+                            echo "'".$_POST["Login-zal"]."'";
+                        } else {
+                            echo "'zly'";
+                        }
+                    } else {
+                        echo "'brak'";
                     }
-                } else {
-                    echo "Nie jestes zalogowany.<br>";
-                }
+                    ?>;
+            </script>
+            <?php
                 if (isset($_POST["Login-zar"])) {
                     $zap1r = "SELECT login FROM klient WHERE login = '".$_POST["Login-zar"]."'";
                     $res1r = mysqli_query($base, $zap1r);
