@@ -27,19 +27,107 @@ function menu_glowne(isnew) {
     panel.innerHTML = "<h2>KSIĘGARNIA INTERNETOWA</h2>";
     let form = document.createElement("form")
     panel.append(form);
-    let actions = [function() {zaloguj("Zaloguj" , "-zal")},function() {zaloguj("Zarejestruj" , "-zar")}, przegladaj, "<b>Zaloguj</b>", "<b>Zarejestruj</b>", "<b>Przeglądaj zasoby</b>"];
-    for(let i=0;i<3;i++) {    
-        let button = document.createElement("button");
-        button.classList.add("button-main");
-        button.type = "button";
-        button.addEventListener("click", actions[i], false);
-        button.innerHTML = actions[i+3];
-        form.appendChild(button);
+    if(login == "brak" || login == "zly") {
+        let actions = [function() {zaloguj("Zaloguj" , "-zal")},function() {zaloguj("Zarejestruj" , "-zar")}, "<b>Zaloguj</b>", "<b>Zarejestruj</b>"];
+        for(let i=0;i<2;i++) {    
+            let button = document.createElement("button");
+            button.classList.add("button-main");
+            button.type = "button";
+            button.addEventListener("click", actions[i], false);
+            button.innerHTML = actions[i+2];
+            form.appendChild(button);
+        }
+    } else {
+        let actions = [przegladaj, wyloguj, "<b>Przeglądaj zasoby</b>", "<b>Wyloguj</b>"];
+        for(let i=0;i<2;i++) {    
+            let button = document.createElement("button");
+            button.classList.add("button-main");
+            button.type = "button";
+            button.addEventListener("click", actions[i], false);
+            button.innerHTML = actions[i+2];
+            form.appendChild(button);
+        }
+        if (admin) {
+            let button_ad = document.createElement("button");
+            button_ad.classList.add("button-main");
+            button_ad.type = "button";
+            button_ad.addEventListener("click", przegladaj_uz, false);
+            button_ad.innerHTML = "<b>Uzytkownicy</b>";
+            form.appendChild(button_ad);
+        }
     }
     if (!isnew) {
         interval = setInterval(function() {move(false, 0.35);}, 5);
     }
 }
+
+function wyloguj() {
+    let falform = document.createElement("form");
+    falform.method = "POST";
+    falform.action = "pr_html.php"
+    panel.appendChild(falform);
+    let falinp = document.createElement("input");
+    falinp.type = "text";
+    falinp.name = "fal";
+    falform.appendChild(falinp);
+    falform.submit();
+}
+
+var przegladaj_u = false;
+
+function przegladaj_uz() {
+    przegladaj_u = true;
+    interval = setInterval(function() {widen(true, false, 0);}, 5);
+}
+
+var uz_c = uzytkownicy.length / 3;
+console.log(uz_c);
+var page_nu = Math.floor(uz_c / 9) + 1;
+var page = 1;
+
+function wypisz_uz() {
+    login_box_m.remove();
+    panel.innerHTML = "";
+    let footer = document.createElement("div");
+    footer.id = "footer";
+    panel.appendChild(footer);
+    let button = document.createElement("button");
+    button.classList.add("button-main");
+    button.addEventListener("click", function(){panel.innerHTML = "";interval = setInterval(function() {widen(false, false, 0);}, 5); page = 1;}, false);
+    button.innerHTML = "WROC";
+    button.style.marginTop = "2.5vh";
+    footer.appendChild(button);
+    let uz = document.createElement("div");
+    uz.id = "uzytkownicy";
+    panel.appendChild(uz);
+    if (page_nu != 1) pages(page_nu, wypisz_uz);
+    uz.innerHTML = "";
+    if (page * 9 < uz_c) uz_t = page * 9;
+    else uz_t = (page * 9) - (9 - (uz_c % 9));
+    console.log(uz_t);
+    for(let i=(page * 9 - 9);i<uz_t;i++) {
+            let uzytkownik = document.createElement("div");
+            uzytkownik.classList.add("book");
+            uz.appendChild(uzytkownik);
+            let login_t = document.createElement("div");
+            login_t.classList.add("tyt");
+            login_t.innerHTML = uzytkownicy[(i * 3)];
+            uzytkownik.appendChild(login_t);
+            let info = document.createElement("div");
+            info.classList.add("info");
+            if(uzytkownicy[(i * 3) + 2] != "") info.innerHTML = "email: " + uzytkownicy[(i * 3) + 2];
+            else info.innerHTML = "email: Nie podano";
+            uzytkownik.appendChild(info);
+            let button = document.createElement("button");
+            button.classList.add("buy-button");
+            button.type = "button";
+            button.innerHTML = "Edytuj";
+            button.addEventListener("click",function(){edit(false, uzytkownicy[(i * 3)], 0)},false);
+            uzytkownik.appendChild(button);
+    }
+}
+
+
 menu_glowne(true);
 
 var canvas = document.getElementById('canvas');
@@ -206,6 +294,7 @@ function zaloguj(name, id) {
 }
 
 function widen(widen, buy, id) {
+    panel.innerHTML = "";
     if (widen) panleft -= 5;
     else panleft += 5;
     if (widen) panwidth += 10;
@@ -219,7 +308,8 @@ function widen(widen, buy, id) {
             clearInterval(interval);
             panel.style.width = window.innerWidth + "px";
             panel.style.left = "0px";
-            biblioteka();
+            if (!przegladaj_u) biblioteka();
+            else {wypisz_uz(); przegladaj_u = false;}
         } 
     } else {
         if(panleft >= window.innerWidth * 0.35) {
@@ -237,14 +327,21 @@ function widen(widen, buy, id) {
 }
 
 function przegladaj() {
-    panel.innerHTML = "";
-    interval = setInterval(function() {widen(true, false, 0);}, 5);
-    
+    if (login != "brak") {
+        panel.innerHTML = "";
+        interval = setInterval(function() {widen(true, false, 0);}, 5);
+    } else {
+        form.innerHTML += "Zaloguj sie zanim zaczniesz przegladac!!";
+    }
 }
+
+if(szuk) {
+    przegladaj();
+}
+
 
 var books_c = ksiazki.length / 6;
 var page_n = Math.floor(books_c / 9) + 1;
-var page = 1;
 
 function biblioteka() {
     login_box_m.remove();
@@ -253,7 +350,7 @@ function biblioteka() {
     panel.appendChild(footer);
     let button = document.createElement("button");
     button.classList.add("button-main");
-    button.addEventListener("click", function(){panel.innerHTML = "";interval = setInterval(function() {widen(false, false, 0);}, 5)}, false);
+    button.addEventListener("click", function(){panel.innerHTML = "";interval = setInterval(function() {widen(false, false, 0);}, 5); page = 1;}, false);
     button.innerHTML = "WROC";
     button.style.marginTop = "2.5vh";
     footer.appendChild(button);
@@ -261,14 +358,14 @@ function biblioteka() {
     books.id = "books";
     books.style.marginTop = "8vh";
     panel.appendChild(books);
-
-    if (page_n != 1) pages(); 
-
+    if (page_n != 1) pages(page_n, add_books); 
     let head = document.createElement("div");
     head.id = "head";
     panel.appendChild(head);
     let search = document.createElement("form");
     search.id = "search";
+    search.action = "pr_html.php";
+    search.method = "POST";
     search.style.width = "50vw";
     head.appendChild(search);
     let searchbar = document.createElement("input")
@@ -289,7 +386,6 @@ function biblioteka() {
     login_box.id = "zal-head";
     login_box.innerHTML = login_text;
     head.appendChild(login_box);
-
     add_books();
 }
 
@@ -329,7 +425,7 @@ function add_book(name, author, price, desc, count, id) {
     book.appendChild(buy_button);
 }
 
-function pages() {
+function pages(num, func) {
     if (page != 1) {
         if (document.getElementById("ar-l") != null) document.getElementById("ar-l").remove();
         let arrow_left = document.createElement("div");
@@ -337,19 +433,19 @@ function pages() {
         arrow_left.innerHTML = "<";
         arrow_left.style.left = "0px";
         arrow_left.id = "ar-l";
-        arrow_left.addEventListener("click", function(){page -= 1;add_books();pages()}, false);
+        arrow_left.addEventListener("click", function(){page -= 1;func();pages(num, func)}, false);
         panel.appendChild(arrow_left);
     } else {
         if (document.getElementById("ar-l") != null) document.getElementById("ar-l").remove();
     }
-    if (page != page_n) {
+    if (page != num) {
         if (document.getElementById("ar-r") != null) document.getElementById("ar-r").remove();
         let arrow_right = document.createElement("div");
         arrow_right.classList.add("arrow");
         arrow_right.innerHTML = ">";
         arrow_right.style.left = window.innerWidth * 0.95 + "px";
         arrow_right.id = "ar-r";
-        arrow_right.addEventListener("click", function(){page += 1;add_books();pages()}, false);
+        arrow_right.addEventListener("click", function(){page += 1;func();pages(num, func)}, false);
         panel.appendChild(arrow_right);
     } else {
         if (document.getElementById("ar-r") != null) document.getElementById("ar-r").remove();
@@ -365,16 +461,17 @@ function check_buy(id) {
     if (document.getElementById("message") != null) document.getElementById("message").remove();
     let send = true;
     let count = Number(document.getElementById("ilosc").value);
-    let check = ksiazki[((id - 1) * 6) + 3];
+    let check = ksiazki[((id - 1) * 6) + 5];
     let form = document.getElementById("form2");
     let message = document.createElement("div");
     message.style.fontSize = "2vh";
     message.style.marginLeft = "4vw";
     message.id = "message";
+    if (count < 1) {message.innerHTML += "<br>Podaj prawidlowa ilosc!!!"; send = false;}
     if (count > check) {message.innerHTML += "<br>Nie mamy tyle ksiazek!!!"; send = false;} 
     if (document.getElementById("adres").value.length <= 5) {message.innerHTML += "<br>Podaj prawidlowy adres!!!"; send = false;}
     console.log(send)
-    if (send) {form.submit(); message.innerHTML += "<br>Wyslano!!!"}
+    if (send) {document.getElementById("id").value = id; document.getElementById("iduz").value = id_uz; form.submit(); message.innerHTML += "<br>Wyslano!!!"}
     form.appendChild(message);
 }
 
@@ -389,6 +486,20 @@ function buy_form(id) {
     form.method = "POST";
     form.style.marginTop = "5vh";
     panel.appendChild(form);
+    let id_form = document.createElement("input");
+    id_form.type = "text";
+    id_form.name = "id"
+    id_form.id = "id"
+    id_form.style.position = "absolute";
+    id_form.style.left = "-100vw";
+    form.append(id_form);
+    let iduz_form = document.createElement("input");
+    iduz_form.type = "text";
+    iduz_form.name = "iduz"
+    iduz_form.id = "iduz"
+    iduz_form.style.position = "absolute";
+    iduz_form.style.left = "-200vw";
+    form.append(iduz_form);
     let label_adres = document.createElement("label");
     label_adres.for = "adres";
     label_adres.innerHTML = "Adres zamowienia:"; 
@@ -419,6 +530,7 @@ function buy_form(id) {
     button1.style.marginTop = "5vh";
     button1.style.width = "10vw";
     form.appendChild(button1);
+    form.innerHTML += " ";
     let but = document.createElement("button");
     but.type = "button";
     but.innerHTML = "Wyslij";
@@ -428,5 +540,19 @@ function buy_form(id) {
     but.style.marginLeft = "0px";
     but.addEventListener("click", function() {check_buy(id);}, false);
     form.appendChild(but);
+    let but2 = document.createElement("button");
+    but2.type = "button";
+    but2.classList.add("button-main");
+    but2.style.marginTop = "40vh";
+    but2.innerHTML = "WROC";
+    but2.addEventListener("click",function(){panel.innerHTML="";interval=setInterval(function(){widen(true,false,0);},5)},false);
+    form.appendChild(but2);
 }
 
+function edit(book, name, id) {
+    panel.innerHTML = "";
+    let name_un = document.createElement("div")
+    name_un.innerHTML = "Edytuj " + name;
+    name_un.classList.add("edit-name");
+    panel.appendChild(name_un);
+}
