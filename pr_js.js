@@ -11,6 +11,10 @@ function CreateLoginBox() {
         login_box_m.innerHTML = "Nie zalogowano";
     } else if (login == "zly") {
         login_box_m.innerHTML = "Podano zly login";
+    } else if (login == "log") {
+        login_box_m.innerHTML = "Podany login jest juz uzywany.";
+    } else if (login == "email") {
+        login_box_m.innerHTML = "Podany mail jest juz uzywany.";
     } else {
         login_box_m.innerHTML = "Zalogowano jako " + login;
     }
@@ -27,7 +31,7 @@ function menu_glowne(isnew) {
     panel.innerHTML = "<h2>KSIĘGARNIA INTERNETOWA</h2>";
     let form = document.createElement("form")
     panel.append(form);
-    if(login == "brak" || login == "zly") {
+    if(login == "brak" || login == "zly" || login == "log" || login == "email") {
         let actions = [function() {zaloguj("Zaloguj" , "-zal")},function() {zaloguj("Zarejestruj" , "-zar")}, "<b>Zaloguj</b>", "<b>Zarejestruj</b>"];
         for(let i=0;i<2;i++) {    
             let button = document.createElement("button");
@@ -56,6 +60,11 @@ function menu_glowne(isnew) {
             form.appendChild(button_ad);
         }
     }
+    let p = document.createElement("p");
+    p.style.position = "absolute";
+    p.style.bottom = "0px";
+    p.innerHTML = "Filip Tarza 2TP 21/5/24";
+    panel.appendChild(p);
     if (!isnew) {
         interval = setInterval(function() {move(false, 0.35);}, 5);
     }
@@ -80,9 +89,9 @@ function przegladaj_uz() {
     interval = setInterval(function() {widen(true, false, 0);}, 5);
 }
 
-var uz_c = uzytkownicy.length / 3;
-console.log(uz_c);
+var uz_c = uzytkownicy.length / 4;
 var page_nu = Math.floor(uz_c / 9) + 1;
+if(uz_c % 9 == 0) page_nu -= 1;
 var page = 1;
 
 function wypisz_uz() {
@@ -97,6 +106,16 @@ function wypisz_uz() {
     button.innerHTML = "WROC";
     button.style.marginTop = "2.5vh";
     footer.appendChild(button);
+    if(admin) {
+        let add_user_button = document.createElement("button");
+        add_user_button.classList.add("button-main");
+        add_user_button.innerHTML = "DODAJ KLIENTA";
+        add_user_button.style.position = "absolute";
+        add_user_button.style.marginTop = "2.5vh";
+        add_user_button.style.right = "5vw";
+        add_user_button.addEventListener("click", function(){edit(false,"","",true)}, false);
+        footer.appendChild(add_user_button);
+    }
     let uz = document.createElement("div");
     uz.id = "uzytkownicy";
     panel.appendChild(uz);
@@ -104,25 +123,24 @@ function wypisz_uz() {
     uz.innerHTML = "";
     if (page * 9 < uz_c) uz_t = page * 9;
     else uz_t = (page * 9) - (9 - (uz_c % 9));
-    console.log(uz_t);
     for(let i=(page * 9 - 9);i<uz_t;i++) {
             let uzytkownik = document.createElement("div");
             uzytkownik.classList.add("book");
             uz.appendChild(uzytkownik);
             let login_t = document.createElement("div");
             login_t.classList.add("tyt");
-            login_t.innerHTML = uzytkownicy[(i * 3)];
+            login_t.innerHTML = uzytkownicy[(i * 4)];
             uzytkownik.appendChild(login_t);
             let info = document.createElement("div");
             info.classList.add("info");
-            if(uzytkownicy[(i * 3) + 2] != "") info.innerHTML = "email: " + uzytkownicy[(i * 3) + 2];
+            if(uzytkownicy[(i * 4) + 2] != "") info.innerHTML = "email: " + uzytkownicy[(i * 4) + 2];
             else info.innerHTML = "email: Nie podano";
             uzytkownik.appendChild(info);
             let button = document.createElement("button");
             button.classList.add("buy-button");
             button.type = "button";
             button.innerHTML = "Edytuj";
-            button.addEventListener("click",function(){edit(false, uzytkownicy[(i * 3)], 0)},false);
+            button.addEventListener("click",function(){edit(false, uzytkownicy[(i * 4)], uzytkownicy[(i * 4) + 3])},false);
             uzytkownik.appendChild(button);
     }
 }
@@ -342,6 +360,7 @@ if(szuk) {
 
 var books_c = ksiazki.length / 6;
 var page_n = Math.floor(books_c / 9) + 1;
+if(books_c % 9 == 0) page_n -= 1;
 
 function biblioteka() {
     login_box_m.remove();
@@ -354,6 +373,16 @@ function biblioteka() {
     button.innerHTML = "WROC";
     button.style.marginTop = "2.5vh";
     footer.appendChild(button);
+    if(admin) {
+        let add_book_button = document.createElement("button");
+        add_book_button.classList.add("button-main");
+        add_book_button.innerHTML = "DODAJ KSIAZKE";
+        add_book_button.style.position = "absolute";
+        add_book_button.style.marginTop = "2.5vh";
+        add_book_button.style.right = "5vw";
+        add_book_button.addEventListener("click", function(){edit(true,"","",true)}, false);
+        footer.appendChild(add_book_button);
+    }
     let books = document.createElement("div");
     books.id = "books";
     books.style.marginTop = "8vh";
@@ -395,6 +424,7 @@ function add_books() {
     let books_t = 0;
     if (page * 9 < books_c) books_t = page * 9;
     else books_t = (page * 9) - (9 - (books_c % 9));
+    if (books_c <= 9) books_t = books_c;
     for(let i=(page * 9 - 9);i<books_t;i++) {
         add_book(ksiazki[(i * 6) + 1],ksiazki[(i * 6) + 2],ksiazki[(i * 6) + 3],ksiazki[(i * 6) + 4],ksiazki[(i * 6) + 5], ksiazki[(i * 6)])
     }
@@ -423,6 +453,12 @@ function add_book(name, author, price, desc, count, id) {
     buy_button.innerHTML = "KUP";
     buy_button.classList.add("buy-button")
     book.appendChild(buy_button);
+    let edit_button = document.createElement("button");
+    edit_button.addEventListener("click", function() {edit(true, name, id)}, false);
+    edit_button.type = "button";
+    edit_button.innerHTML = "Edytuj";
+    edit_button.classList.add("buy-button")
+    book.appendChild(edit_button);
 }
 
 function pages(num, func) {
@@ -461,7 +497,8 @@ function check_buy(id) {
     if (document.getElementById("message") != null) document.getElementById("message").remove();
     let send = true;
     let count = Number(document.getElementById("ilosc").value);
-    let check = ksiazki[((id - 1) * 6) + 5];
+    let check = ksiazki[ksiazki.indexOf(id) + 5];
+    console.log(check);
     let form = document.getElementById("form2");
     let message = document.createElement("div");
     message.style.fontSize = "2vh";
@@ -470,15 +507,15 @@ function check_buy(id) {
     if (count < 1) {message.innerHTML += "<br>Podaj prawidlowa ilosc!!!"; send = false;}
     if (count > check) {message.innerHTML += "<br>Nie mamy tyle ksiazek!!!"; send = false;} 
     if (document.getElementById("adres").value.length <= 5) {message.innerHTML += "<br>Podaj prawidlowy adres!!!"; send = false;}
-    console.log(send)
-    if (send) {document.getElementById("id").value = id; document.getElementById("iduz").value = id_uz; form.submit(); message.innerHTML += "<br>Wyslano!!!"}
+    if (send) {document.getElementById("id").value = ksiazki[ksiazki.indexOf(id)].slice(0, -2); document.getElementById("iduz").value = id_uz; form.submit(); message.innerHTML += "<br>Wyslano!!!"}
     form.appendChild(message);
 }
 
 function buy_form(id) {
+
     let name = document.createElement("div");
     name.id = "buy_name";
-    name.innerHTML = "Kup ksiazke - " + ksiazki[((id - 1) * 6) + 1];
+    name.innerHTML = "Kup ksiazke - " + ksiazki[ksiazki.indexOf(id) + 1];
     panel.appendChild(name);
     let form = document.createElement("form");
     form.id = "form2";
@@ -549,10 +586,106 @@ function buy_form(id) {
     form.appendChild(but2);
 }
 
-function edit(book, name, id) {
+function edit(book, name, id, add) {
     panel.innerHTML = "";
     let name_un = document.createElement("div")
-    name_un.innerHTML = "Edytuj " + name;
+    if(!add) name_un.innerHTML = "Edytuj " + name;
+    else {name_un.innerHTML = "Dodaj";
+    name_un.style.marginBottom = "10vh";}
     name_un.classList.add("edit-name");
     panel.appendChild(name_un);
+    let edit_form = document.createElement("form");
+    edit_form.method = "POST";
+    edit_form.action = "pr_html.php";
+    edit_form.id = "edit-form";
+    panel.appendChild(edit_form);
+    if(!add) {
+        let id_box = document.createElement("input");
+        id_box.type = "text";
+        id_box.name = "edit-id";
+        id_box.readOnly = "readonly";
+        id_box.style.marginLeft = "0px";
+        id_box.classList.add("button-main");
+        id_box.value = id.slice(0, -2);
+        edit_form.appendChild(id_box);
+        edit_form.appendChild(document.createElement("br"));
+    } 
+
+    let labels = []
+    if (book) labels = ["Nowy tytul:&nbsp&nbsp", "Nowy Autor: ", "Nowa cena: ", "edit-tytul", "edit-autor", "edit-cena"];
+    else labels = ["Nowy login:&nbsp&nbsp", "Nowe haslo: ", "Nowy email: ", "edit-login", "edit-haslo", "edit-email"];
+    for(let i=0;i<3;i++) {
+        let label = document.createElement("label");
+        label.innerHTML = labels[i];
+        label.for = labels[i+3];
+        label.style.margin = "0px"
+        edit_form.appendChild(label);
+        edit_form.appendChild(document.createElement("br"))
+        let input = document.createElement("input");
+        input.type = "text";
+        input.name = labels[i+3];
+        input.style.margin = "0px";
+        input.style.width = "40vw";
+        if (!add) {
+            let index = 0;
+            if (book) {input.value = ksiazki[ksiazki.indexOf(id) + i + 1]}
+            else {index = uzytkownicy.indexOf(id);
+            input.value = uzytkownicy[index - (3 - i)];}
+        }
+        input.classList.add("button-main");
+        edit_form.appendChild(input);
+        edit_form.appendChild(document.createElement("br"));
+    }
+    if (book) {
+        let labels2 = ["Nowy opis:&nbsp&nbsp", "Nowa ilosc:&nbsp&nbsp", "edit-opis", "edit-ilosc"];
+        for(let i=0;i<=1;i++) {
+            let labelo = document.createElement("label");
+            labelo.innerHTML = labels2[i];
+            labelo.for = labels2[i+2];
+            labelo.style.margin = "0px";
+            edit_form.appendChild(labelo);
+            edit_form.appendChild(document.createElement("br"));
+            let inputo = document.createElement("input");
+            inputo.type = "text";
+            inputo.style.width = "40vw";
+            inputo.name = labels2[i+2];
+            inputo.style.margin = "0px";
+            if (!add) inputo.value = ksiazki[ksiazki.indexOf(id) + 4 + i];
+            inputo.classList.add("button-main");
+            edit_form.appendChild(inputo);
+            edit_form.appendChild(document.createElement("br"));
+        }
+    }
+
+    let buttons = document.createElement("div");
+    buttons.id = "buttons";
+    edit_form.appendChild(buttons);
+
+    let back = document.createElement("button");
+    back.type = "button";
+    back.classList.add("button-main");
+    back.innerHTML = "WROC";
+    back.addEventListener("click", function() {panel.innerHTML="";interval=setInterval(function(){widen(false,false,0);},5)},false);
+    buttons.appendChild(back);
+    if(!add) {
+        let edit = document.createElement("input");
+        edit.classList.add("button-main");
+        edit.value = "Edytuj";
+        edit.type = "submit";
+        buttons.appendChild(edit);
+        let del = document.createElement("button");
+        del.classList.add("button-main");
+        del.innerHTML = "Usun";
+        del.type = "button";
+        if(book) del.addEventListener("click", function() {let u = document.createElement("input");u.name="bookDel";edit_form.appendChild(u);edit_form.submit()},false);
+        else del.addEventListener("click", function() {let u = document.createElement("input");u.name="userDel";edit_form.appendChild(u);edit_form.submit()},false);
+        buttons.appendChild(del);
+    } else {
+        let add = document.createElement("button");
+        add.classList.add("button-main");
+        add.innerHTML = "Dodaj";
+        if(book) add.addEventListener("click", function() {let u = document.createElement("input");u.name="bookAdd";edit_form.appendChild(u);edit_form.submit()},false);
+        else add.addEventListener("click", function() {let u = document.createElement("input");u.name="userAdd";edit_form.appendChild(u);edit_form.submit()},false);
+        buttons.appendChild(add);
+    }
 }

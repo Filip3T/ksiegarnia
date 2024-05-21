@@ -187,3 +187,16 @@ h2 {
     justify-content: center;
     font-size: 6vh;
 }
+
+#edit-form {
+    margin-left: 5vw;
+    margin-top: -5vh;
+}
+
+#buttons {
+    position: absolute;
+    width: 30vw;
+    right: 10vw;
+    top: 10vh;
+    text-align: left;
+}
