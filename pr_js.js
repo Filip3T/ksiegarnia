@@ -202,7 +202,7 @@ for (let j = 0; j < numRows; j++) {
 
 var st = true;
 
-function update() {
+/* function update() {
     for (let j = 0; j < numRows; j++) {
         let x = 0;
         let y = 0;
@@ -221,6 +221,45 @@ function update() {
             if (st) {
                 wave[j][i].c[0] = wave[j][i - 1].c[0] + randint(25, 60);
                 wave[j][i].c[1] = wave[j][i - 1].c[1] + randint(-30, 70);
+            } else {
+                wave[j][i].velocityx += x;
+                wave[j][i].velocityy += y;
+                wave[j][i].c[0] = wave[j][i].bc[0] + wave[j][i].velocityx;
+                wave[j][i].c[1] = wave[j][i].bc[1] + wave[j][i].velocityy;
+            }
+            ctx.lineTo(wave[j][i].c[0], wave[j][i].c[1]);
+            ctx.fillStyle = "hsl(" + wave[j][i].colorh + "," + wave[j][i].colors + "%," + wave[j][i].colorl + "%)";
+            ctx.fill();
+            wave[j][i].ba[0] = wave[j][i].a[0];
+            wave[j][i].ba[1] = wave[j][i].a[1];
+            wave[j][i].bb[0] = wave[j][i].b[0];
+            wave[j][i].bb[1] = wave[j][i].b[1];
+            wave[j][i].bc[0] = wave[j][i].c[0];
+            wave[j][i].bc[1] = wave[j][i].c[1];
+        }
+    }
+    st = false;
+} */
+
+function update() {
+    for (let j = 0; j < numRows; j++) {
+        let x = 0;
+        let y = 0;
+        for (let i = 1; i < numTrianglesPerRow; i++) {
+            if (wave[j][i].velocityx >= 0) x = randint(-window.innerWidth/19800, window.innerWidth/28285)
+            else x = randint(-window.innerWidth/28285, window.innerWidth/19800)
+            if (wave[j][i].velocityy >= 0) y = randint(-0.1, window.innerWidth/28285)
+            else y = randint(-window.innerWidth/28285, window.innerWidth/19800)
+            ctx.beginPath();
+            wave[j][i].a[0] = wave[j][i - 1].b[0];
+            wave[j][i].a[1] = wave[j][i - 1].b[1];
+            ctx.moveTo(wave[j][i].a[0], wave[j][i].a[1]);
+            wave[j][i].b[0] = wave[j][i - 1].c[0];
+            wave[j][i].b[1] = wave[j][i - 1].c[1];
+            ctx.lineTo(wave[j][i].b[0], wave[j][i].b[1]);
+            if (st) {
+                wave[j][i].c[0] = wave[j][i - 1].c[0] + randint(window.innerWidth/80, window.innerWidth/33);
+                wave[j][i].c[1] = wave[j][i - 1].c[1] + randint(-window.innerHeight/36, window.innerHeight/15);
             } else {
                 wave[j][i].velocityx += x;
                 wave[j][i].velocityy += y;
@@ -282,6 +321,7 @@ function zaloguj(name, id) {
         let inp = document.createElement("input");
         inp.classList.add("button-main");
         inp.style.marginTop = "0px";
+        if(i==1) inp.type="password";
         inp.id = names[i];
         inp.name = names[i] + id;
         nform.appendChild(labels);
